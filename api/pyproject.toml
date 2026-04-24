@@ -1,0 +1,8 @@
+[project]
+name = "revision-api"
+version = "0.1.0"
+dependencies = [
+    "fastapi",
+    "firebase-admin",
+    "uvicorn[standard]"
+]
