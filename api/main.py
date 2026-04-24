@@ -5,11 +5,21 @@ from datetime import datetime, timedelta
 import firebase_admin
 from firebase_admin import credentials, firestore
 import os
+import json
 
 # 1. Initialize Firebase
-cred_path = os.path.join(os.path.dirname(__file__), "firebase-credentials.json")
+firebase_env = os.environ.get("FIREBASE_CREDENTIALS")
+
 try:
-    cred = credentials.Certificate(cred_path)
+    if firebase_env:
+        # We are running on Vercel: Read from Environment Variable
+        cred_dict = json.loads(firebase_env)
+        cred = credentials.Certificate(cred_dict)
+    else:
+        # We are running locally: Read from the file
+        cred_path = os.path.join(os.path.dirname(__file__), "firebase-credentials.json")
+        cred = credentials.Certificate(cred_path)
+        
     firebase_admin.initialize_app(cred)
     db = firestore.client()
 except Exception as e:
